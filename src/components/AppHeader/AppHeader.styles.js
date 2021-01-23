@@ -1,21 +1,23 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Wrapper = styled.header`
   height: 70px;
-  color: white;
-  background-color: #00acae;
 
-  padding: 0 32px;
+  background-color: #00ACAE;
+  color: #FFFFFF;
 
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  font-size: 24px;
+
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px;
 
   display: flex;
   align-items: center;
+  
+  padding: 0 32px;
 
   span {
-    font-size: 25px;
     font-weight: 700;
     margin-left: 8px;
   }
-`;
+`

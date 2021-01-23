@@ -1,12 +1,11 @@
-import React from "react";
+import React from 'react'
+import { Indicator, Wrapper } from './Checkbox.styles'
 
-import { Wrapper, Indicator } from "./Checkbox.styles";
-
-export default function Checkbox({ value, title, onClick }) {
-  return (
-    <Wrapper onClick={onClick}>
-      <Indicator value={value} />
-      {title}
-    </Wrapper>
-  );
+function Checkbox ({ value, title, onClick }) {
+  return <Wrapper onClick={onClick}>
+    <Indicator value={value} />
+    { title }
+  </Wrapper>
 }
+
+export default Checkbox

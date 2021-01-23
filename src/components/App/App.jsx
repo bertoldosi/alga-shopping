@@ -1,118 +1,108 @@
-import React, { useState, useEffect } from "react";
-
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Wrapper, Container } from "./App.styles";
-import AppHeader from "../AppHeader/AppHeader";
-import AppContainer from "../AppContainer/AppContainer";
-import LineChart from "../LineChart/LineChart";
-import ShoppingList from "../ShoppingList/ShoppingList";
 
-import productsList from "../../mocks/productsList.json";
+import LineChart from "../../shared/LineChart";
+
+import AppHeader from "../AppHeader";
+import AppContainer from "../AppContainer";
+import ShoppingList from "../ShoppingList";
+
 import extractPercentage from "../../utils/extractPercentage";
 
-export default function App() {
+import {
+  selectAllProducts,
+  selectSelectedProducts,
+  selectSelectedProductTotalPrice,
+} from "../../store/Products/Products.selectors";
+
+import { toggleProduct } from "../../store/Products/Products.actions";
+
+function App() {
+  const dispatch = useDispatch();
+
   const colors = ["#62CBC6", "#00ABAD", "#00858C", "#006073", "#004D61"];
 
-  const [products, setProducts] = useState(productsList.products);
-  const [selectdProducts, setSelectdProducts] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const products = useSelector(selectAllProducts);
+  const selectedProducts = useSelector(selectSelectedProducts);
+  const totalPrice = useSelector(selectSelectedProductTotalPrice);
 
-  useEffect(() => {
-    const newSelectdProducts = products.filter((product) => product.checked);
-
-    setSelectdProducts(newSelectdProducts);
-  }, [products, selectdProducts]);
-
-  useEffect(() => {
-    const total = selectdProducts
-      .map((product) => product.price)
-      .reduce((a, b) => a + b, 0);
-
-    setTotalPrice(total);
-  }, [selectdProducts]);
-
-  const handlerToggle = (id, checked) => {
-    const newProducts = products.map((product) =>
-      product.id === id ? { ...product, checked: !product.checked } : product
-    );
-    setProducts(newProducts);
-  };
+  function handleToggle(id) {
+    dispatch(toggleProduct(id));
+  }
 
   return (
     <Wrapper>
       <Container>
         <AppHeader />
-
         <AppContainer
           left={
             <ShoppingList
-              title="Produtos disponiveis"
-              products={products}
-              onToggle={handlerToggle}
+              title="Produtos disponíveis"
+              onToggle={handleToggle}
             />
           }
           middle={
             <ShoppingList
-              title="Lista de selecionados"
-              products={selectdProducts}
-              onToggle={handlerToggle}
+              title="Sua lista de compras"
+              displayOnlySelected
+              onToggle={handleToggle}
             />
           }
           right={
             <div>
-              <h4>estatisticas:</h4>
+              estatisticas
               <LineChart
                 color={colors[0]}
-                title="Saudavel"
+                title="saudavel"
                 percentage={extractPercentage(
-                  selectdProducts.length,
-                  selectdProducts.filter((product) =>
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
                     product.tags.includes("healthy")
                   ).length
                 )}
               />
-
               <LineChart
                 color={colors[1]}
-                title="Não tão saudavel"
+                title="nao tao saudavel"
                 percentage={extractPercentage(
-                  selectdProducts.length,
-                  selectdProducts.filter((product) =>
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
                     product.tags.includes("junk")
                   ).length
                 )}
               />
-
               <LineChart
                 color={colors[2]}
-                title="Limpeza"
+                title="limpeza"
                 percentage={extractPercentage(
-                  selectdProducts.length,
-                  selectdProducts.filter((product) =>
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
                     product.tags.includes("cleaning")
                   ).length
                 )}
               />
-
               <LineChart
                 color={colors[3]}
-                title="Outros"
+                title="outros"
                 percentage={extractPercentage(
-                  selectdProducts.length,
-                  selectdProducts.filter((product) =>
+                  selectedProducts.length,
+                  selectedProducts.filter((product) =>
                     product.tags.includes("others")
                   ).length
                 )}
               />
-              <div>
-                Previsão de gastos:
-                <br />
-                <h2>
+              <div style={{ marginTop: 12 }}>
+                <h2 style={{ fontWeight: 400, fontSize: 12, color: "#00364A" }}>
+                  previsão de gastos:
+                </h2>
+                <div style={{ fontSize: 24 }}>
                   {totalPrice.toLocaleString("pt-br", {
                     minimumFractionDigits: 2,
                     style: "currency",
                     currency: "BRL",
                   })}
-                </h2>
+                </div>
               </div>
             </div>
           }
@@ -121,3 +111,5 @@ export default function App() {
     </Wrapper>
   );
 }
+
+export default App;
